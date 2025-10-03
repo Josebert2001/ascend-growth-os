@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ChevronRight, ChevronLeft, Sparkles } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface CheckInFlowProps {
@@ -13,6 +14,7 @@ export const CheckInFlow = ({ onComplete }: CheckInFlowProps) => {
   const [energy, setEnergy] = useState(3);
   const [mood, setMood] = useState("");
   const [gratitude, setGratitude] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const moods = [
     { emoji: "😔", label: "Sad" },
@@ -23,11 +25,45 @@ export const CheckInFlow = ({ onComplete }: CheckInFlowProps) => {
     { emoji: "🤩", label: "Excited" },
   ];
 
-  const handleComplete = () => {
-    toast.success("Check-in completed! 🎉", {
-      description: "See you tomorrow for your next check-in"
-    });
-    onComplete();
+  const handleComplete = async () => {
+    if (!gratitude.trim()) {
+      toast.error("Please write something you're grateful for");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not authenticated");
+
+      const today = new Date().toISOString().split('T')[0];
+
+      const { error } = await supabase
+        .from("check_ins")
+        .upsert({
+          user_id: user.id,
+          date: today,
+          energy,
+          mood,
+          gratitude,
+          challenge: null
+        }, {
+          onConflict: 'user_id,date'
+        });
+
+      if (error) throw error;
+
+      toast.success("Check-in completed! 🎉", {
+        description: "See you tomorrow for your next check-in"
+      });
+      onComplete();
+    } catch (error) {
+      console.error("Error saving check-in:", error);
+      toast.error("Failed to save check-in");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -141,6 +177,7 @@ export const CheckInFlow = ({ onComplete }: CheckInFlowProps) => {
               variant="outline"
               onClick={() => setStep(step - 1)}
               className="flex-1"
+              disabled={loading}
             >
               <ChevronLeft className="w-4 h-4 mr-2" />
               Back
@@ -159,10 +196,10 @@ export const CheckInFlow = ({ onComplete }: CheckInFlowProps) => {
           ) : (
             <Button
               onClick={handleComplete}
-              disabled={!gratitude.trim()}
+              disabled={!gratitude.trim() || loading}
               className="flex-1 gradient-primary border-0"
             >
-              Complete Check-in
+              {loading ? "Saving..." : "Complete Check-in"}
             </Button>
           )}
         </div>

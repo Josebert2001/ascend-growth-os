@@ -1,46 +1,134 @@
 import { CheckCircle2, Circle, Flame } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 interface Habit {
   id: string;
   name: string;
-  completed: boolean;
+  time_of_day: string;
   streak: number;
-  timeOfDay: string;
+}
+
+interface HabitWithCompletion extends Habit {
+  completed: boolean;
 }
 
 export const TodayHabits = () => {
-  const [habits, setHabits] = useState<Habit[]>([
-    { id: "1", name: "Morning Meditation", completed: true, streak: 7, timeOfDay: "Morning" },
-    { id: "2", name: "Read 20 Pages", completed: true, streak: 12, timeOfDay: "Morning" },
-    { id: "3", name: "Workout", completed: false, streak: 5, timeOfDay: "Afternoon" },
-    { id: "4", name: "Learn Spanish", completed: false, streak: 3, timeOfDay: "Evening" },
-    { id: "5", name: "Gratitude Journal", completed: false, streak: 15, timeOfDay: "Evening" },
-  ]);
+  const [habits, setHabits] = useState<HabitWithCompletion[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const toggleHabit = (id: string) => {
-    setHabits(prev => prev.map(h => 
-      h.id === id ? { ...h, completed: !h.completed } : h
-    ));
-    
-    const habit = habits.find(h => h.id === id);
-    if (habit && !habit.completed) {
-      toast.success(`${habit.name} completed! 🎉`, {
-        description: `${habit.streak + 1} day streak!`
-      });
+  useEffect(() => {
+    fetchHabits();
+  }, []);
+
+  const fetchHabits = async () => {
+    try {
+      const { data: habitsData, error: habitsError } = await supabase
+        .from("habits")
+        .select("id, name, time_of_day, streak")
+        .order("time_of_day");
+
+      if (habitsError) throw habitsError;
+
+      const today = new Date().toISOString().split('T')[0];
+      
+      const { data: completionsData, error: completionsError } = await supabase
+        .from("habit_completions")
+        .select("habit_id, completed")
+        .eq("date", today);
+
+      if (completionsError) throw completionsError;
+
+      const completionsMap = new Map(
+        completionsData?.map(c => [c.habit_id, c.completed]) || []
+      );
+
+      const habitsWithCompletion: HabitWithCompletion[] = habitsData?.map(h => ({
+        ...h,
+        completed: completionsMap.get(h.id) || false
+      })) || [];
+
+      setHabits(habitsWithCompletion);
+    } catch (error) {
+      console.error("Error fetching habits:", error);
+      toast.error("Failed to load habits");
+    } finally {
+      setLoading(false);
     }
   };
 
+  const toggleHabit = async (id: string) => {
+    const habit = habits.find(h => h.id === id);
+    if (!habit) return;
+
+    const newCompleted = !habit.completed;
+    const today = new Date().toISOString().split('T')[0];
+
+    try {
+      const { error } = await supabase
+        .from("habit_completions")
+        .upsert({
+          habit_id: id,
+          date: today,
+          completed: newCompleted
+        }, {
+          onConflict: 'habit_id,date'
+        });
+
+      if (error) throw error;
+
+      // Update streak if completing
+      if (newCompleted) {
+        const { error: updateError } = await supabase
+          .from("habits")
+          .update({ streak: habit.streak + 1 })
+          .eq("id", id);
+
+        if (updateError) throw updateError;
+
+        toast.success(`${habit.name} completed! 🎉`, {
+          description: `${habit.streak + 1} day streak!`
+        });
+      }
+
+      fetchHabits();
+    } catch (error) {
+      console.error("Error toggling habit:", error);
+      toast.error("Failed to update habit");
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="glass p-6 rounded-2xl">
+        <div className="animate-pulse space-y-4">
+          <div className="h-6 bg-muted rounded w-1/3"></div>
+          <div className="h-12 bg-muted rounded"></div>
+          <div className="h-12 bg-muted rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
   const completedCount = habits.filter(h => h.completed).length;
   const totalCount = habits.length;
-  const progress = (completedCount / totalCount) * 100;
+  const progress = totalCount > 0 ? (completedCount / totalCount) * 100 : 0;
 
   const groupedHabits = habits.reduce((acc, habit) => {
-    if (!acc[habit.timeOfDay]) acc[habit.timeOfDay] = [];
-    acc[habit.timeOfDay].push(habit);
+    if (!acc[habit.time_of_day]) acc[habit.time_of_day] = [];
+    acc[habit.time_of_day].push(habit);
     return acc;
-  }, {} as Record<string, Habit[]>);
+  }, {} as Record<string, HabitWithCompletion[]>);
+
+  if (habits.length === 0) {
+    return (
+      <div className="glass p-6 rounded-2xl text-center">
+        <h3 className="text-xl font-semibold mb-2">No Habits Yet</h3>
+        <p className="text-muted-foreground">Create your first habit to get started!</p>
+      </div>
+    );
+  }
 
   return (
     <div className="glass p-6 rounded-2xl space-y-4">
@@ -49,7 +137,6 @@ export const TodayHabits = () => {
         <span className="text-sm text-muted-foreground">{completedCount}/{totalCount} complete</span>
       </div>
 
-      {/* Progress Bar */}
       <div className="h-2 bg-muted rounded-full overflow-hidden">
         <div 
           className="h-full gradient-primary transition-all duration-500"
@@ -57,7 +144,6 @@ export const TodayHabits = () => {
         />
       </div>
 
-      {/* Grouped Habits */}
       <div className="space-y-4">
         {Object.entries(groupedHabits).map(([timeOfDay, timeHabits]) => (
           <div key={timeOfDay} className="space-y-2">

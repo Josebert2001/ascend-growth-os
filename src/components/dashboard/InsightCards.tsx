@@ -1,33 +1,47 @@
 import { Lightbulb, TrendingUp, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Insight {
   id: string;
-  type: "pattern" | "prediction" | "celebration";
+  type: "pattern" | "prediction" | "celebration" | "suggestion";
   title: string;
   description: string;
 }
 
 export const InsightCards = () => {
-  const insights: Insight[] = [
-    {
-      id: "1",
-      type: "pattern",
-      title: "Morning Momentum",
-      description: "You complete meditation 90% of the time in mornings. This seems to be your optimal window!"
-    },
-    {
-      id: "2",
-      type: "prediction",
-      title: "High Success Today",
-      description: "Based on your energy patterns, you're likely to crush your workout today 💪"
-    },
-    {
-      id: "3",
-      type: "celebration",
-      title: "Consistency King",
-      description: "15-day streak on gratitude journaling! You're building something meaningful."
+  const [insights, setInsights] = useState<Insight[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchInsights();
+  }, []);
+
+  const fetchInsights = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("insights")
+        .select("*")
+        .eq("dismissed", false)
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      if (error) throw error;
+      
+      const typedInsights: Insight[] = (data || []).map(item => ({
+        id: item.id,
+        type: item.type as Insight['type'],
+        title: item.title,
+        description: item.description
+      }));
+      
+      setInsights(typedInsights);
+    } catch (error) {
+      console.error("Error fetching insights:", error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
   const getIcon = (type: string) => {
     switch (type) {
@@ -46,6 +60,8 @@ export const InsightCards = () => {
       default: return "text-primary";
     }
   };
+
+  if (loading || insights.length === 0) return null;
 
   return (
     <div className="space-y-4">

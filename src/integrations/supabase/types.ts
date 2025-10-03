@@ -14,7 +14,253 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      check_ins: {
+        Row: {
+          challenge: string | null
+          created_at: string
+          date: string
+          energy: number
+          gratitude: string
+          id: string
+          mood: string
+          user_id: string
+        }
+        Insert: {
+          challenge?: string | null
+          created_at?: string
+          date?: string
+          energy: number
+          gratitude: string
+          id?: string
+          mood: string
+          user_id: string
+        }
+        Update: {
+          challenge?: string | null
+          created_at?: string
+          date?: string
+          energy?: number
+          gratitude?: string
+          id?: string
+          mood?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      habit_completions: {
+        Row: {
+          completed: boolean
+          created_at: string
+          date: string
+          habit_id: string
+          id: string
+          notes: string | null
+        }
+        Insert: {
+          completed?: boolean
+          created_at?: string
+          date?: string
+          habit_id: string
+          id?: string
+          notes?: string | null
+        }
+        Update: {
+          completed?: boolean
+          created_at?: string
+          date?: string
+          habit_id?: string
+          id?: string
+          notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habit_completions_habit_id_fkey"
+            columns: ["habit_id"]
+            isOneToOne: false
+            referencedRelation: "habits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      habits: {
+        Row: {
+          created_at: string
+          frequency: string
+          id: string
+          linked_path_id: string | null
+          linked_vision_id: string | null
+          longest_streak: number
+          name: string
+          streak: number
+          time_of_day: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          frequency?: string
+          id?: string
+          linked_path_id?: string | null
+          linked_vision_id?: string | null
+          longest_streak?: number
+          name: string
+          streak?: number
+          time_of_day?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          frequency?: string
+          id?: string
+          linked_path_id?: string | null
+          linked_vision_id?: string | null
+          longest_streak?: number
+          name?: string
+          streak?: number
+          time_of_day?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "habits_linked_path_id_fkey"
+            columns: ["linked_path_id"]
+            isOneToOne: false
+            referencedRelation: "paths"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "habits_linked_vision_id_fkey"
+            columns: ["linked_vision_id"]
+            isOneToOne: false
+            referencedRelation: "visions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      insights: {
+        Row: {
+          created_at: string
+          description: string
+          dismissed: boolean
+          id: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          dismissed?: boolean
+          id?: string
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          dismissed?: boolean
+          id?: string
+          title?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      paths: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          deadline: string | null
+          description: string | null
+          id: string
+          name: string
+          status: string | null
+          vision_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          name: string
+          status?: string | null
+          vision_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          name?: string
+          status?: string | null
+          vision_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "paths_vision_id_fkey"
+            columns: ["vision_id"]
+            isOneToOne: false
+            referencedRelation: "visions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      visions: {
+        Row: {
+          category: string
+          color: string | null
+          created_at: string
+          description: string | null
+          id: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

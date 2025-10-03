@@ -3,6 +3,7 @@ import { Vision } from "../Visions";
 
 interface VisionCardProps {
   vision: Vision;
+  onUpdate?: () => void;
 }
 
 export const VisionCard = ({ vision }: VisionCardProps) => {

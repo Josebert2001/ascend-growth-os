@@ -1,4 +1,6 @@
-import { Target, TrendingUp, Calendar, Link2 } from "lucide-react";
+import { Target, TrendingUp, Link2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Vision {
   id: string;
@@ -12,38 +14,77 @@ interface Vision {
 }
 
 export const VisionProgress = () => {
-  const visions: Vision[] = [
-    {
-      id: "1",
-      title: "Master Spanish",
-      category: "Learning",
-      progress: 45,
-      pathsCompleted: 2,
-      totalPaths: 5,
-      linkedHabits: 2,
-      color: "from-blue-500 to-cyan-500"
-    },
-    {
-      id: "2",
-      title: "Peak Physical Health",
-      category: "Health",
-      progress: 70,
-      pathsCompleted: 3,
-      totalPaths: 4,
-      linkedHabits: 3,
-      color: "from-emerald-500 to-teal-500"
-    },
-    {
-      id: "3",
-      title: "Launch Side Project",
-      category: "Career",
-      progress: 30,
-      pathsCompleted: 1,
-      totalPaths: 6,
-      linkedHabits: 2,
-      color: "from-purple-500 to-pink-500"
-    },
-  ];
+  const [visions, setVisions] = useState<Vision[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchVisions();
+  }, []);
+
+  const fetchVisions = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("visions")
+        .select(`
+          id,
+          title,
+          category,
+          color,
+          paths (id, status),
+          habits (id)
+        `)
+        .order("created_at", { ascending: false })
+        .limit(3);
+
+      if (error) throw error;
+
+      const transformedVisions: Vision[] = data?.map((v: any) => {
+        const totalPaths = v.paths?.length || 0;
+        const pathsCompleted = v.paths?.filter((p: any) => p.status === 'completed').length || 0;
+        const progress = totalPaths > 0 ? Math.round((pathsCompleted / totalPaths) * 100) : 0;
+
+        return {
+          id: v.id,
+          title: v.title,
+          category: v.category,
+          progress,
+          pathsCompleted,
+          totalPaths,
+          linkedHabits: v.habits?.length || 0,
+          color: v.color
+        };
+      }) || [];
+
+      setVisions(transformedVisions);
+    } catch (error) {
+      console.error("Error fetching visions:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="glass p-6 rounded-2xl">
+        <div className="animate-pulse space-y-4">
+          <div className="h-6 bg-muted rounded w-1/3"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="h-32 bg-muted rounded-xl"></div>
+            <div className="h-32 bg-muted rounded-xl"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (visions.length === 0) {
+    return (
+      <div className="glass p-6 rounded-2xl text-center">
+        <h3 className="text-xl font-semibold mb-2">No Visions Yet</h3>
+        <p className="text-sm text-muted-foreground">Create your first vision to see progress here</p>
+      </div>
+    );
+  }
 
   return (
     <div className="glass p-6 rounded-2xl space-y-4">

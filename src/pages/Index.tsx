@@ -53,10 +53,10 @@ const Index = () => {
   if (!session) return null;
 
   return (
-    <div className="min-h-screen pb-24">
+    <div className="min-h-screen pb-32">
       <Header session={session} />
       
-      <main className="container mx-auto px-4 py-6 max-w-7xl">
+      <main className="container mx-auto px-4 py-6 max-w-md">
         {activeTab === "matrix" && <GrowthMatrix />}
         {activeTab === "visions" && <Visions />}
         {activeTab === "habits" && <Habits />}

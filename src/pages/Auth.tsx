@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Sparkles } from "lucide-react";
+import { Layers } from "lucide-react";
 import { toast } from "sonner";
 
 export const Auth = () => {
@@ -76,70 +76,122 @@ export const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen flex items-center justify-center p-6 bg-background">
       <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center gap-3 mb-4">
-            <Sparkles className="w-10 h-10 text-primary animate-pulse" />
-            <h1 className="text-4xl font-bold gradient-text">Ascend</h1>
-          </div>
-          <p className="text-muted-foreground">Your Personal Growth Operating System</p>
-        </div>
+        {!isLogin ? (
+          // Sign In / Sign Up Form
+          <div className="glass p-8 rounded-3xl animate-fade-in">
+            <h2 className="text-2xl font-bold mb-6 text-center">
+              {isLogin ? "Welcome Back" : "Start Your Journey"}
+            </h2>
 
-        <div className="glass p-8 rounded-2xl">
-          <h2 className="text-2xl font-bold mb-6 text-center">
-            {isLogin ? "Welcome Back" : "Start Your Journey"}
-          </h2>
+            <form onSubmit={handleAuth} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email" className="text-sm">Email</Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="you@example.com"
+                  className="bg-input border-border h-12"
+                  required
+                />
+              </div>
 
-          <form onSubmit={handleAuth} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@example.com"
-                className="glass border-border"
-                required
-              />
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="glass border-border"
-                required
-                minLength={6}
-              />
-              {!isLogin && (
+              <div className="space-y-2">
+                <Label htmlFor="password" className="text-sm">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="bg-input border-border h-12"
+                  required
+                  minLength={6}
+                />
                 <p className="text-xs text-muted-foreground">Minimum 6 characters</p>
-              )}
+              </div>
+
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 h-12 text-base font-semibold rounded-full"
+              >
+                {loading ? "Loading..." : isLogin ? "Sign In" : "Create Account"}
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => setIsLogin(!isLogin)}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+              </button>
             </div>
 
-            <Button
-              type="submit"
-              disabled={loading}
-              className="w-full gradient-primary border-0 py-6 text-lg"
-            >
-              {loading ? "Loading..." : isLogin ? "Sign In" : "Create Account"}
-            </Button>
-          </form>
-
-          <div className="mt-6 text-center">
             <button
-              onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              onClick={() => setIsLogin(false)}
+              className="mt-4 text-sm text-primary hover:text-primary/80 transition-colors w-full text-center"
             >
-              {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
+              ← Back
             </button>
           </div>
-        </div>
+        ) : (
+          // Landing Screen
+          <div className="text-center space-y-8 animate-fade-in">
+            {/* Logo */}
+            <div className="flex justify-center mb-8">
+              <div className="relative">
+                <div className="w-32 h-32 rounded-3xl bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shadow-2xl">
+                  <Layers className="w-16 h-16 text-white" />
+                </div>
+              </div>
+            </div>
+
+            {/* Tagline */}
+            <div className="space-y-3">
+              <h1 className="text-4xl font-bold text-foreground leading-tight">
+                The only<br />productivity<br />app you need
+              </h1>
+            </div>
+
+            {/* Sign In Button */}
+            <div className="pt-8">
+              <Button
+                onClick={() => setIsLogin(false)}
+                className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 h-14 text-base font-semibold rounded-full shadow-lg"
+              >
+                Sign in with Email
+              </Button>
+            </div>
+
+            {/* Social Login Buttons */}
+            <div className="flex gap-3 pt-4">
+              <Button
+                variant="outline"
+                className="flex-1 bg-card hover:bg-card/80 border-border h-12 rounded-full"
+                disabled
+              >
+                Google
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 bg-card hover:bg-card/80 border-border h-12 rounded-full"
+                disabled
+              >
+                Apple ID
+              </Button>
+            </div>
+
+            {/* Terms */}
+            <p className="text-xs text-muted-foreground pt-6 px-4">
+              By Continuing you agree to the Terms and Conditions
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );

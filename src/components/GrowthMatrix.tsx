@@ -14,15 +14,32 @@ export const GrowthMatrix = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-5 animate-fade-in">
       {/* Welcome Section */}
-      <div className="glass p-6 rounded-2xl relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-accent/10" />
-        <div className="relative flex items-center gap-4">
-          <Sunrise className="w-12 h-12 text-primary animate-float" />
-          <div>
-            <h2 className="text-3xl font-bold">{getGreeting()}</h2>
-            <p className="text-muted-foreground">Ready to grow today?</p>
+      <div className="bg-card p-5 rounded-3xl border border-border">
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-2xl font-bold">Hello</h2>
+          <div className="flex gap-2">
+            <button className="p-2 rounded-full hover:bg-muted transition-colors">
+              <Sunrise className="w-5 h-5" />
+            </button>
+          </div>
+        </div>
+        <p className="text-base font-semibold">User Name</p>
+      </div>
+
+      {/* Daily Progress */}
+      <div className="bg-card p-5 rounded-3xl border border-border">
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-base font-semibold">Daily progress</h3>
+          <span className="text-sm text-muted-foreground">Here is your daily stats</span>
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <span className="text-2xl font-bold">75%</span>
+          </div>
+          <div className="w-full bg-muted rounded-full h-2">
+            <div className="bg-primary h-2 rounded-full" style={{ width: '75%' }} />
           </div>
         </div>
       </div>

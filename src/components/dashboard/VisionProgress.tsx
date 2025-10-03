@@ -1,5 +1,6 @@
 import { Target, TrendingUp, Link2 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 
 interface Vision {
@@ -16,6 +17,7 @@ interface Vision {
 export const VisionProgress = () => {
   const [visions, setVisions] = useState<Vision[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchVisions();
@@ -95,7 +97,7 @@ export const VisionProgress = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {visions.map((vision) => (
-          <div key={vision.id} className="glass p-4 rounded-xl hover:scale-[1.02] transition-transform cursor-pointer">
+          <div key={vision.id} className="glass p-4 rounded-xl hover:scale-[1.02] transition-transform cursor-pointer" onClick={() => navigate(`/vision/${vision.id}`)}>
             <div className="flex items-start justify-between mb-3">
               <div className="flex-1">
                 <h4 className="font-semibold mb-1">{vision.title}</h4>

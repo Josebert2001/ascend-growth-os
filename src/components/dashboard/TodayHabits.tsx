@@ -1,5 +1,6 @@
 import { CheckCircle2, Circle, Flame } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -17,6 +18,7 @@ interface HabitWithCompletion extends Habit {
 export const TodayHabits = () => {
   const [habits, setHabits] = useState<HabitWithCompletion[]>([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchHabits();
@@ -153,7 +155,7 @@ export const TodayHabits = () => {
             {timeHabits.map(habit => (
               <button
                 key={habit.id}
-                onClick={() => toggleHabit(habit.id)}
+                onClick={() => navigate(`/habit/${habit.id}`)}
                 className={`w-full flex items-center justify-between p-4 rounded-xl transition-all hover:scale-[1.02] ${
                   habit.completed 
                     ? "bg-success/10 border border-success/20" 

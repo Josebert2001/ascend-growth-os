@@ -2,6 +2,7 @@ import { Heart, Calendar, TrendingUp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
 import { CheckInFlow } from "./mindfulness/CheckInFlow";
+import { MoodEnergyTrends } from "./mindfulness/MoodEnergyTrends";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
@@ -155,15 +156,8 @@ export const Mindfulness = () => {
         </div>
       </div>
 
-      {/* Mood Trends Placeholder */}
-      <div className="glass p-6 rounded-2xl">
-        <h3 className="text-lg font-semibold mb-4">Mood & Energy Trends</h3>
-        <p className="text-sm text-muted-foreground text-center py-8">
-          {totalCheckIns > 0 
-            ? "Keep checking in to see your patterns and insights"
-            : "Complete more check-ins to see your patterns"}
-        </p>
-      </div>
+      {/* Mood & Energy Trends */}
+      <MoodEnergyTrends />
     </div>
   );
 };

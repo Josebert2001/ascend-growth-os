@@ -1,6 +1,9 @@
-import { Lightbulb, TrendingUp, Sparkles } from "lucide-react";
+import { Lightbulb, TrendingUp, Sparkles, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
+import { dismissInsight } from "@/lib/insightGenerator";
+import { useToast } from "@/hooks/use-toast";
 
 interface Insight {
   id: string;
@@ -12,6 +15,7 @@ interface Insight {
 export const InsightCards = () => {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     fetchInsights();
@@ -43,6 +47,12 @@ export const InsightCards = () => {
     }
   };
 
+  const handleDismiss = async (insightId: string) => {
+    await dismissInsight(insightId);
+    setInsights(insights.filter(i => i.id !== insightId));
+    toast({ title: "Insight dismissed" });
+  };
+
   const getIcon = (type: string) => {
     switch (type) {
       case "pattern": return Lightbulb;
@@ -72,7 +82,15 @@ export const InsightCards = () => {
           const colorClass = getColor(insight.type);
           
           return (
-            <div key={insight.id} className="glass p-4 rounded-xl hover:scale-[1.02] transition-transform">
+            <div key={insight.id} className="glass p-4 rounded-xl hover:scale-[1.02] transition-transform relative">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="absolute top-2 right-2 h-6 w-6"
+                onClick={() => handleDismiss(insight.id)}
+              >
+                <X className="w-4 h-4" />
+              </Button>
               <Icon className={`w-6 h-6 ${colorClass} mb-3`} />
               <h4 className="font-semibold mb-2">{insight.title}</h4>
               <p className="text-sm text-muted-foreground">{insight.description}</p>

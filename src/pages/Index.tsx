@@ -7,10 +7,11 @@ import { Visions } from "@/components/Visions";
 import { Habits } from "@/components/Habits";
 import { Mindfulness } from "@/components/Mindfulness";
 import { AICoach } from "@/components/AICoach";
+import { LearningLibrary } from "@/components/LearningLibrary";
 import { Navigation } from "@/components/Navigation";
 import { Header } from "@/components/Header";
 
-type Tab = "matrix" | "visions" | "habits" | "mindfulness" | "ai";
+type Tab = "matrix" | "visions" | "habits" | "mindfulness" | "ai" | "learn";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState<Tab>("matrix");
@@ -62,6 +63,7 @@ const Index = () => {
         {activeTab === "habits" && <Habits />}
         {activeTab === "mindfulness" && <Mindfulness />}
         {activeTab === "ai" && <AICoach />}
+        {activeTab === "learn" && <LearningLibrary />}
       </main>
 
       <Navigation activeTab={activeTab} onTabChange={setActiveTab} />

@@ -1,6 +1,6 @@
-import { Home, ListTodo, User, Plus } from "lucide-react";
+import { Home, ListTodo, User, Plus, BookOpen, Target } from "lucide-react";
 
-type Tab = "matrix" | "visions" | "habits" | "mindfulness" | "ai";
+type Tab = "matrix" | "visions" | "habits" | "mindfulness" | "ai" | "learn";
 
 interface NavigationProps {
   activeTab: Tab;
@@ -11,10 +11,11 @@ export const Navigation = ({ activeTab, onTabChange }: NavigationProps) => {
   const sideTabs = [
     { id: "matrix" as Tab, icon: Home },
     { id: "habits" as Tab, icon: ListTodo },
+    { id: "learn" as Tab, icon: BookOpen },
   ];
 
   const rightTabs = [
-    { id: "visions" as Tab, icon: ListTodo },
+    { id: "visions" as Tab, icon: Target },
     { id: "ai" as Tab, icon: User },
   ];
 

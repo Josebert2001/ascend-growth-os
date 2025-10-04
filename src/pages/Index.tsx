@@ -25,7 +25,7 @@ const Index = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setSession(session);
       if (!session) {
-        navigate("/auth");
+        navigate("/");
       }
     });
 
@@ -33,7 +33,7 @@ const Index = () => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       if (!session) {
-        navigate("/auth");
+        navigate("/");
       } else {
         // Generate insights on mount
         generateInsights(session.user.id).catch(console.error);

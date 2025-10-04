@@ -104,7 +104,7 @@ export default function VisionDetail() {
 
       if (error) throw error;
       toast({ title: "Vision archived successfully" });
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error archiving vision:", error);
       toast({ title: "Error archiving vision", variant: "destructive" });
@@ -116,7 +116,7 @@ export default function VisionDetail() {
       const { error } = await supabase.from("visions").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Vision deleted successfully" });
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error deleting vision:", error);
       toast({ title: "Error deleting vision", variant: "destructive" });

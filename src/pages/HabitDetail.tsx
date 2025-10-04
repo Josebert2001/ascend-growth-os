@@ -131,7 +131,7 @@ export default function HabitDetail() {
       const { error } = await supabase.from("habits").delete().eq("id", id);
       if (error) throw error;
       toast({ title: "Habit deleted successfully" });
-      navigate("/");
+      navigate("/dashboard");
     } catch (error) {
       console.error("Error deleting habit:", error);
       toast({ title: "Error deleting habit", variant: "destructive" });

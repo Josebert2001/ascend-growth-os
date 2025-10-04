@@ -5,6 +5,7 @@ import { CheckInFlow } from "./mindfulness/CheckInFlow";
 import { MoodEnergyTrends } from "./mindfulness/MoodEnergyTrends";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { generateInsights } from "@/lib/insightGenerator";
 
 export const Mindfulness = () => {
   const [showCheckIn, setShowCheckIn] = useState(false);
@@ -76,9 +77,18 @@ export const Mindfulness = () => {
   };
 
   if (showCheckIn) {
-    return <CheckInFlow onComplete={() => {
+    return <CheckInFlow onComplete={async () => {
       setShowCheckIn(false);
       fetchCheckInData();
+      // Trigger insight generation after check-in
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await generateInsights(user.id);
+        }
+      } catch (error) {
+        console.error("Error generating insights:", error);
+      }
     }} />;
   }
 

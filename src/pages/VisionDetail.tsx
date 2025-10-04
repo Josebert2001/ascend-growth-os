@@ -18,6 +18,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { CreatePathDialog } from "@/components/visions/CreatePathDialog";
 
 interface Vision {
   id: string;
@@ -57,6 +58,7 @@ export default function VisionDetail() {
   const [habits, setHabits] = useState<Habit[]>([]);
   const [loading, setLoading] = useState(true);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showCreatePath, setShowCreatePath] = useState(false);
 
   useEffect(() => {
     fetchVisionData();
@@ -225,7 +227,7 @@ export default function VisionDetail() {
       <Card className="p-6">
         <div className="flex justify-between items-center mb-4">
           <h2 className="text-xl font-semibold">Paths</h2>
-          <Button size="sm">
+          <Button size="sm" onClick={() => setShowCreatePath(true)}>
             <Plus className="w-4 h-4 mr-2" />
             Add Path
           </Button>
@@ -297,6 +299,14 @@ export default function VisionDetail() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <CreatePathDialog
+        open={showCreatePath}
+        onOpenChange={setShowCreatePath}
+        visionId={id!}
+        onPathCreated={fetchVisionData}
+        existingPaths={paths.map(p => ({ id: p.id, name: p.name }))}
+      />
     </div>
   );
 }

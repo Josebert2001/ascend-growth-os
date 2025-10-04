@@ -10,6 +10,7 @@ import { AICoach } from "@/components/AICoach";
 import { LearningLibrary } from "@/components/LearningLibrary";
 import { Navigation } from "@/components/Navigation";
 import { Header } from "@/components/Header";
+import { generateInsights } from "@/lib/insightGenerator";
 
 type Tab = "matrix" | "visions" | "habits" | "mindfulness" | "ai" | "learn";
 
@@ -33,6 +34,9 @@ const Index = () => {
       setSession(session);
       if (!session) {
         navigate("/auth");
+      } else {
+        // Generate insights on mount
+        generateInsights(session.user.id).catch(console.error);
       }
       setLoading(false);
     });

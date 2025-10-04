@@ -90,6 +90,11 @@ export const CreateHabitDialog = ({ open, onOpenChange, onCreateHabit }: CreateH
     setName(template.name);
     setFrequency(template.frequency);
     setTimeOfDay(template.timeOfDay);
+    // Auto-switch to custom tab after selection for editing
+    setTimeout(() => {
+      const customTab = document.querySelector('[value="custom"]') as HTMLElement;
+      customTab?.click();
+    }, 100);
   };
 
   return (
@@ -99,10 +104,10 @@ export const CreateHabitDialog = ({ open, onOpenChange, onCreateHabit }: CreateH
           <DialogTitle className="text-2xl gradient-text">Create New Habit</DialogTitle>
         </DialogHeader>
         
-        <Tabs defaultValue="custom" className="w-full">
+        <Tabs defaultValue="templates" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
-            <TabsTrigger value="custom">Custom</TabsTrigger>
             <TabsTrigger value="templates">Templates</TabsTrigger>
+            <TabsTrigger value="custom">Custom</TabsTrigger>
           </TabsList>
 
           <TabsContent value="templates">

@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { generateInsights } from "@/lib/insightGenerator";
 
 interface Habit {
   id: string;
@@ -92,6 +93,12 @@ export const TodayHabits = () => {
         toast.success(`${habit.name} completed! 🎉`, {
           description: `${habit.streak + 1} day streak!`
         });
+        
+        // Trigger insight generation after habit completion
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          generateInsights(user.id).catch(console.error);
+        }
       }
 
       fetchHabits();

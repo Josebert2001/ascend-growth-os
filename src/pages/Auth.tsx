@@ -76,59 +76,63 @@ export const Auth = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 bg-gradient-to-b from-background to-muted/20">
+    <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 bg-gradient-to-b from-background to-muted/20">
       <div className="w-full max-w-md">
         {/* Logo at top */}
-        <div className="flex justify-center mb-8 animate-fade-in">
+        <div className="flex justify-center mb-6 sm:mb-8 animate-fade-in">
           <img
             src="/Untitled design (2).png"
             alt="Ascend"
-            className="h-32 w-auto object-contain"
+            className="h-24 sm:h-32 md:h-40 w-auto object-contain"
+            style={{
+              filter: 'drop-shadow(0 10px 30px rgba(59, 130, 246, 0.3)) contrast(1.1) saturate(1.1)',
+              imageRendering: 'crisp-edges'
+            }}
           />
         </div>
 
-        <div className="bg-card/80 backdrop-blur-xl p-8 rounded-3xl border border-border shadow-2xl animate-fade-in">
+        <div className="bg-card/80 backdrop-blur-xl p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-border shadow-2xl animate-fade-in">
           {/* Back button */}
           {!isLogin && (
             <button
               onClick={() => navigate("/")}
-              className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+              className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground hover:text-foreground transition-colors mb-4 sm:mb-6"
             >
-              <ArrowLeft className="w-4 h-4" />
+              <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
               Back to welcome
             </button>
           )}
 
-          <h2 className="text-3xl font-bold mb-2 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-center">
             {isLogin ? "Welcome Back" : "Start Your Journey"}
           </h2>
-          <p className="text-muted-foreground text-center mb-6">
+          <p className="text-sm sm:text-base text-muted-foreground text-center mb-4 sm:mb-6">
             {isLogin ? "Sign in to continue your growth" : "Create your account to get started"}
           </p>
 
-          <form onSubmit={handleAuth} className="space-y-4">
+          <form onSubmit={handleAuth} className="space-y-3 sm:space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm font-medium">Email</Label>
+              <Label htmlFor="email" className="text-xs sm:text-sm font-medium">Email</Label>
               <Input
                 id="email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="bg-background border-border h-12 rounded-xl"
+                className="bg-background border-border h-11 sm:h-12 rounded-xl text-sm sm:text-base"
                 required
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="password" className="text-sm font-medium">Password</Label>
+              <Label htmlFor="password" className="text-xs sm:text-sm font-medium">Password</Label>
               <Input
                 id="password"
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="bg-background border-border h-12 rounded-xl"
+                className="bg-background border-border h-11 sm:h-12 rounded-xl text-sm sm:text-base"
                 required
                 minLength={6}
               />
@@ -138,23 +142,23 @@ export const Auth = () => {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 h-12 text-base font-semibold rounded-full mt-6"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground border-0 h-11 sm:h-12 text-sm sm:text-base font-semibold rounded-full mt-4 sm:mt-6"
             >
               {loading ? "Loading..." : isLogin ? "Sign In" : "Create Account"}
             </Button>
           </form>
 
-          <div className="mt-6 text-center">
+          <div className="mt-4 sm:mt-6 text-center">
             <button
               onClick={() => setIsLogin(!isLogin)}
-              className="text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+              className="text-xs sm:text-sm text-primary hover:text-primary/80 transition-colors font-medium"
             >
               {isLogin ? "Don't have an account? Sign up" : "Already have an account? Sign in"}
             </button>
           </div>
         </div>
 
-        <p className="text-xs text-muted-foreground text-center mt-6">
+        <p className="text-xs sm:text-sm text-muted-foreground text-center mt-4 sm:mt-6 px-4">
           By continuing you agree to our Terms and Conditions
         </p>
       </div>

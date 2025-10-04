@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Edit, Trash2, Pause, Play, Flame, Trophy, Calendar, TrendingUp } from "lucide-react";
+import { ArrowLeft, CreditCard as Edit, Trash2, Pause, Play, Flame, Trophy, Calendar, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,

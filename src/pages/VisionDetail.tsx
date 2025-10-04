@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ArrowLeft, Edit, Archive, Trash2, Plus, Target, TrendingUp } from "lucide-react";
+import { ArrowLeft, CreditCard as Edit, Archive, Trash2, Plus, Target, TrendingUp } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import {
   AlertDialog,

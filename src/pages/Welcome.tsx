@@ -1,15 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import {
-  Target,
-  ListTodo,
-  BookOpen,
-  Brain,
-  Heart,
-  TrendingUp,
-  CheckCircle2,
-  Sparkles
-} from "lucide-react";
+import { Target, ListTodo, BookOpen, Brain, Heart, TrendingUp, CircleCheck as CheckCircle2, Sparkles } from "lucide-react";
 
 export const Welcome = () => {
   const navigate = useNavigate();
